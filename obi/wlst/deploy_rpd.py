@@ -93,23 +93,28 @@ if restartBI == 'True':
 	print 'Restarting BI server'
 	# Restart BI Server
 	cd ('..')
-	cd ('oracle.biee.admin:oracleInstance=instance1,type=BIDomain.BIInstanceDeployment.BIComponent,biInstance=coreapplication,process=coreapplication_obis1,group=Service')
+        list_folders=ls(returnMap='true', returnType='a')
+        for service2stop in list_folders:
+                if "coreapplication_obis1" in service2stop:
+                        cd(service2stop)
+                        print 'Stopping the BI server' + service2stop
+                        params = jarray.array([], java.lang.Object)
+                        signs = jarray.array([], java.lang.String)
+                        invoke('stop', params, signs)
+                        BIServerStatus = get('Status')
+                        print 'BI ServerStatus : ' +BIServerStatus
+                        cd('..')
 
-	print 'Stopping the BI server'
-	params = jarray.array([], java.lang.Object)
-	signs = jarray.array([], java.lang.String)
-	invoke('stop', params, signs)
-
-	BIServerStatus = get('Status')
-	print 'BI ServerStatus : ' +BIServerStatus
-
-	print 'Starting the BI server'
-	params = jarray.array([], java.lang.Object)
-	signs = jarray.array([], java.lang.String)
-	invoke('start', params, signs)
-
-	BIServerStatus = get('Status')
-	print 'BI ServerStatus : ' +BIServerStatus
+        for service2start in list_folders:
+                if "coreapplication_obis1" in service2start:
+                        cd(service2start)
+                        print 'Starting the BI server' + service2start
+                        params = jarray.array([], java.lang.Object)
+                        signs = jarray.array([], java.lang.String)
+                        invoke('start', params, signs)
+                        BIServerStatus = get('Status')
+                        print 'BI ServerStatus : ' +BIServerStatus
+                        cd('..')
 else: 
 	print '(Skipped restarting BI Server)'
 # Exit
